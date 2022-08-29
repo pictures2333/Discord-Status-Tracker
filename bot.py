@@ -261,42 +261,29 @@ async def status(ctx):
     pass
 @status.command()
 async def now(ctx, userid):
-    au = ctx.author
-    roles = au.roles
-    isa = 0
-    for a in roles:
-        for c in a.permissions:
-            if c[0] == 'administrator' and c[1] == True:
-                isa = 1
-    if ctx.author.id == ctx.guild.owner.id:
-        isa = 1
-    if isa == 1:
-        if os.path.exists(f'settings/{str(ctx.guild.id)}.json'):
-            try:
-                with open(f'settings/{str(ctx.guild.id)}.json', 'r', encoding = 'utf8') as f:
-                    wt1 = json.load(f)
-                user = ctx.guild.get_member(int(str(userid).replace('<', '').replace('>', '').replace('!', '').replace('@', '')))
-                exists = False
-                tdata = None
-                for u in wt1['users']:
-                    if u['id'] == user.id:
-                        exists = True
-                        tdata = u
-                        break
-                if exists == True:
-                    time_1 = datetime.strptime(datetime.now().strftime("%Y/%m/%d %H:%M:%S"),"%Y/%m/%d %H:%M:%S")
-                    time_2 = datetime.strptime(datetime.fromtimestamp(u["time"]).strftime("%Y/%m/%d %H:%M:%S"),"%Y/%m/%d %H:%M:%S")
-                    time_interval = time_1-time_2
-
-                    await ctx.send(f"**{user.mention}'s Status**\nStatus:{str(user.status)}\nElasped for {time_interval}(Start from {datetime.fromtimestamp(u['time']).strftime('%Y/%m/%d %H:%M:%S')})")
-                else:
-                    await ctx.send('Error because ``User isnt tracked``.')
-            except Exception as e:
-                await ctx.send(f'Error because ``{str(e)}``.')
-        else:
-            await ctx.send(f'Lost file ``settings/{str(ctx.guild.id)}.json``\nPlease use ``>>reset``.')
+    if os.path.exists(f'settings/{str(ctx.guild.id)}.json'):
+        try:
+            with open(f'settings/{str(ctx.guild.id)}.json', 'r', encoding = 'utf8') as f:
+                wt1 = json.load(f)
+            user = ctx.guild.get_member(int(str(userid).replace('<', '').replace('>', '').replace('!', '').replace('@', '')))
+            exists = False
+            tdata = None
+            for u in wt1['users']:
+                if u['id'] == user.id:
+                    exists = True
+                    tdata = u
+                    break
+            if exists == True:
+                time_1 = datetime.strptime(datetime.now().strftime("%Y/%m/%d %H:%M:%S"),"%Y/%m/%d %H:%M:%S")
+                time_2 = datetime.strptime(datetime.fromtimestamp(u["time"]).strftime("%Y/%m/%d %H:%M:%S"),"%Y/%m/%d %H:%M:%S")
+                time_interval = time_1-time_2
+                await ctx.send(f"**{user.mention}'s Status**\nStatus:{str(user.status)}\nElasped for {time_interval}(Start from {datetime.fromtimestamp(u['time']).strftime('%Y/%m/%d %H:%M:%S')})")
+            else:
+                await ctx.send('Error because ``User isnt tracked``.')
+        except Exception as e:
+            await ctx.send(f'Error because ``{str(e)}``.')
     else:
-        await ctx.send('You dont have permission ``administrator``.')
+        await ctx.send(f'Lost file ``settings/{str(ctx.guild.id)}.json``\nPlease use ``>>reset``.')
 @status.command()
 async def log(ctx, userid):
     if os.path.exists(f'settings/{str(ctx.guild.id)}.json'):
