@@ -1,6 +1,5 @@
-from ast import alias
 import discord, asyncio, os, json, glob
-from discord.ext import commands, tasks
+from discord.ext import commands
 from datetime import datetime
 
 if not os.path.exists('settings'):
